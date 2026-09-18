@@ -1,6 +1,10 @@
 import { useState } from 'react'
 
-export const DEFAULT_CENTER: [number, number] = [53.385, -1.47] // Millbrook town centre (sample data area)
+// Geographic centre of Great Britain (near Dunsop Bridge, Lancashire), used
+// as a whole-country fallback view when we don't know where the family is.
+export const DEFAULT_CENTER: [number, number] = [54.0, -2.9]
+export const DEFAULT_ZOOM = 6
+export const LOCATED_ZOOM = 13
 
 export function useUserLocation() {
   const [location, setLocation] = useState<[number, number] | null>(null)

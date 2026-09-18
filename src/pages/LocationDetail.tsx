@@ -65,7 +65,8 @@ export function LocationDetail() {
         </span>
         <h1 className="text-xl font-extrabold text-brand-900">{place.name}</h1>
         <p className="mt-1 text-[13px] text-slate-500">
-          {place.free ? 'Free' : place.priceNote} · {place.postcode}
+          {place.free ? 'Free' : place.priceNote}
+          {place.postcode ? ` · ${place.postcode}` : ''}
         </p>
         <p className="mt-2 text-[13px] leading-relaxed text-slate-700">{place.description}</p>
         <p className="mt-2 text-[11px] text-slate-400">

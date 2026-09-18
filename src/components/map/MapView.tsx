@@ -38,6 +38,9 @@ const WAYPOINT_EMOJI: Record<RouteWaypoint['kind'], string> = {
 function Recenter({ center, zoom }: { center: [number, number]; zoom: number }) {
   const map = useMap()
   useEffect(() => {
+    // Guards against Leaflet measuring a 0-size container on first paint
+    // (common inside flex/tab layouts) before snapping to the real view.
+    map.invalidateSize()
     map.setView(center, zoom)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [center[0], center[1], zoom])
@@ -60,7 +63,7 @@ export function MapView({
   userLocation?: [number, number]
 }) {
   return (
-    <MapContainer center={center} zoom={zoom} scrollWheelZoom className="h-full w-full" attributionControl={false}>
+    <MapContainer center={center} zoom={zoom} scrollWheelZoom className="h-full w-full">
       <Recenter center={center} zoom={zoom} />
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

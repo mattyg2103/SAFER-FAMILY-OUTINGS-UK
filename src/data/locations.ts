@@ -1,4 +1,4 @@
-import type { Place, WalkingRoute } from '../types'
+import type { Facilities, LocationAttributes, Place, PlaceCategory, Tri, WalkingRoute } from '../types'
 
 // Seed data uses a fictional UK town ("Millbrook") so information shown is
 // clearly illustrative. Coordinates sit around South Yorkshire for realistic
@@ -74,7 +74,7 @@ const woodlandTrailRoute: WalkingRoute = {
   lastChecked: '2026-07-18',
 }
 
-export const PLACES: Place[] = [
+const MILLBROOK_PLACES: Place[] = [
   {
     id: 'riverside-park',
     name: 'Riverside Park',
@@ -807,6 +807,198 @@ export const PLACES: Place[] = [
     infoSource: 'venue',
   },
 ]
+
+// Real, named public parks and green spaces spread across the UK so the map
+// has genuine coverage nationwide, not just around the fictional Millbrook
+// example above. In keeping with "know before you go", we do not invent
+// accessibility, water, road or facility details for places we haven't
+// verified — those are marked "unknown" until a venue or a visiting family
+// confirms them via Contribute.
+
+function unknownAttributes(overrides: Partial<LocationAttributes> = {}): LocationAttributes {
+  const base: LocationAttributes = {
+    enclosure: 'unknown',
+    gatedPlayground: 'unknown',
+    fencedPlayArea: 'unknown',
+    water: 'unknown',
+    waterBarrier: 'unknown',
+    roads: 'unknown',
+    roadCrossings: 'unknown',
+    carFree: 'unknown',
+    wheelchairAccessible: 'unknown',
+    buggyFriendly: 'unknown',
+    stepFree: 'unknown',
+    accessibleParking: 'unknown',
+    accessibleToilet: 'unknown',
+    changingPlaces: 'unknown',
+    flatRoute: 'unknown',
+    surfacedRoute: 'unknown',
+    seating: 'unknown',
+    restPoints: 'unknown',
+    unevenTerrain: 'unknown',
+    steps: 'unknown',
+    steepSections: 'unknown',
+    quiet: 'unknown',
+    sensoryFriendly: 'unknown',
+    reducedNoiseSessions: 'unknown',
+    reducedLightSessions: 'unknown',
+    sensoryRoom: 'unknown',
+    quietBreakoutSpace: 'unknown',
+    smallerGroups: 'unknown',
+    clearPaths: 'unknown',
+    audioInfo: 'unknown',
+    tactileActivities: 'unknown',
+    guidedActivities: 'unknown',
+    visualInfo: 'unknown',
+    writtenInstructions: 'unknown',
+    bslSupport: 'unknown',
+    communicationBoards: 'unknown',
+    visualSchedules: 'unknown',
+    simpleInstructions: 'unknown',
+    staffSupport: 'unknown',
+    indoorQuietArea: 'unknown',
+    outdoorSpace: true,
+  }
+  return { ...base, ...overrides }
+}
+
+function unknownFacilities(overrides: Partial<Facilities> = {}): Facilities {
+  const base: Facilities = {
+    toilets: 'unknown',
+    accessibleToilet: 'unknown',
+    cafe: 'unknown',
+    picnicTables: 'unknown',
+    playAreas: 'unknown',
+    seating: 'unknown',
+    babyChanging: 'unknown',
+    shelter: 'unknown',
+    parking: 'unknown',
+    accessibleParking: 'unknown',
+    changingPlaces: 'unknown',
+  }
+  return { ...base, ...overrides }
+}
+
+interface CommunityParkInput {
+  id: string
+  name: string
+  lat: number
+  lng: number
+  town: string
+  category?: PlaceCategory
+  water?: Tri | 'nearby-open' | 'nearby-with-barrier' | 'none'
+  description?: string
+}
+
+function communityPark(input: CommunityParkInput): Place {
+  const category = input.category ?? 'park'
+  const icon = category === 'nature-reserve' || category === 'woodland' ? '🌲' : category === 'beach' ? '🏖️' : '🌳'
+  return {
+    id: input.id,
+    name: input.name,
+    category,
+    lat: input.lat,
+    lng: input.lng,
+    town: input.town,
+    free: true,
+    heroImage: icon,
+    gallery: [icon],
+    description:
+      input.description ??
+      `A public park in ${input.town}. Accessibility, water and facility details haven't been confirmed by the community yet — if you've visited, help other families by adding what you found.`,
+    attributes: unknownAttributes(input.water ? { water: input.water as LocationAttributes['water'] } : {}),
+    facilities: unknownFacilities(),
+    routes: [],
+    inclusiveAdjustments: [],
+    reviews: [],
+    venueManaged: false,
+    lastChecked: '2026-09-18',
+    infoSource: 'community',
+  }
+}
+
+const UK_PARKS: Place[] = [
+  // London
+  communityPark({ id: 'hyde-park', name: 'Hyde Park', lat: 51.5073, lng: -0.1657, town: 'London', water: 'nearby-open', description: 'One of London\'s largest Royal Parks, home to the Serpentine lake.' }),
+  communityPark({ id: 'regents-park', name: "Regent's Park", lat: 51.5313, lng: -0.157, town: 'London', water: 'nearby-open', description: "A Royal Park with a boating lake, open spaces and London Zoo on its edge." }),
+  communityPark({ id: 'hampstead-heath', name: 'Hampstead Heath', lat: 51.5608, lng: -0.1629, town: 'London', category: 'nature-reserve', water: 'nearby-open', description: 'Ancient heath and woodland with swimming ponds and wide views over the city.' }),
+  communityPark({ id: 'greenwich-park', name: 'Greenwich Park', lat: 51.4769, lng: -0.0005, town: 'London', description: 'A hilltop Royal Park overlooking the Thames, home to the Royal Observatory.' }),
+  communityPark({ id: 'victoria-park-london', name: 'Victoria Park', lat: 51.5361, lng: -0.0388, town: 'London', water: 'nearby-open', description: "East London's oldest public park, with lakes and wide green spaces." }),
+  communityPark({ id: 'battersea-park', name: 'Battersea Park', lat: 51.4791, lng: -0.1586, town: 'London', water: 'nearby-open', description: 'A riverside park with a boating lake and a children\'s zoo.' }),
+  communityPark({ id: 'richmond-park', name: 'Richmond Park', lat: 51.4415, lng: -0.2735, town: 'London', category: 'nature-reserve', description: "London's largest Royal Park, known for its free-roaming deer." }),
+  communityPark({ id: 'clapham-common', name: 'Clapham Common', lat: 51.4618, lng: -0.1487, town: 'London', water: 'nearby-open', description: 'A large open common with ponds, popular for sport and picnics.' }),
+  communityPark({ id: 'finsbury-park', name: 'Finsbury Park', lat: 51.5646, lng: -0.1064, town: 'London', description: 'A large north London park with sports facilities and a lake.' }),
+  communityPark({ id: 'southwark-park', name: 'Southwark Park', lat: 51.4959, lng: -0.0489, town: 'London', water: 'nearby-open', description: 'A south-east London park with a boating lake and a playground.' }),
+
+  // Manchester
+  communityPark({ id: 'heaton-park', name: 'Heaton Park', lat: 53.5286, lng: -2.2703, town: 'Manchester', water: 'nearby-open', description: 'One of the largest municipal parks in Europe, with a boating lake and farm centre.' }),
+  communityPark({ id: 'platt-fields-park', name: 'Platt Fields Park', lat: 53.4514, lng: -2.2185, town: 'Manchester', water: 'nearby-open', description: 'A large park with a lake, playground and skate park.' }),
+  communityPark({ id: 'whitworth-park', name: 'Whitworth Park', lat: 53.4576, lng: -2.2296, town: 'Manchester', description: 'A park next to the Whitworth Art Gallery in south Manchester.' }),
+  communityPark({ id: 'alexandra-park-manchester', name: 'Alexandra Park', lat: 53.4432, lng: -2.2308, town: 'Manchester', description: 'A Victorian park with sports pitches and gardens.' }),
+
+  // Birmingham
+  communityPark({ id: 'cannon-hill-park', name: 'Cannon Hill Park', lat: 52.4487, lng: -1.8968, town: 'Birmingham', water: 'nearby-open', description: "One of Birmingham's most popular parks, with lakes, a nature centre and play areas." }),
+  communityPark({ id: 'sutton-park', name: 'Sutton Park', lat: 52.5667, lng: -1.8333, town: 'Sutton Coldfield', category: 'nature-reserve', water: 'nearby-open', description: 'A vast National Nature Reserve with woodland, heathland and pools.' }),
+  communityPark({ id: 'lickey-hills', name: 'Lickey Hills Country Park', lat: 52.3897, lng: -2.0182, town: 'Birmingham', category: 'walk', description: 'A country park with wooded hills and waymarked walking trails.' }),
+
+  // Leeds
+  communityPark({ id: 'roundhay-park', name: 'Roundhay Park', lat: 53.836, lng: -1.501, town: 'Leeds', water: 'nearby-open', description: 'One of the largest city parks in Europe, with two lakes and formal gardens.' }),
+  communityPark({ id: 'golden-acre-park', name: 'Golden Acre Park', lat: 53.8615, lng: -1.5763, town: 'Leeds', water: 'nearby-open', description: 'A park with a lake, woodland walks and a bird hide.' }),
+
+  // Sheffield
+  communityPark({ id: 'endcliffe-park', name: 'Endcliffe Park', lat: 53.366, lng: -1.499, town: 'Sheffield', water: 'nearby-open', description: 'A riverside park along the Porter Brook, popular with families and students.' }),
+  communityPark({ id: 'graves-park', name: 'Graves Park', lat: 53.3444, lng: -1.4738, town: 'Sheffield', description: "Sheffield's largest park, with a small farm and woodland trails." }),
+
+  // Liverpool
+  communityPark({ id: 'sefton-park', name: 'Sefton Park', lat: 53.3809, lng: -2.9296, town: 'Liverpool', water: 'nearby-open', description: 'A Victorian park with a lake, meadows and the Palm House glasshouse.' }),
+  communityPark({ id: 'stanley-park-liverpool', name: 'Stanley Park', lat: 53.4362, lng: -2.9611, town: 'Liverpool', water: 'nearby-open', description: 'A large park between Anfield and Goodison Park football stadiums.' }),
+
+  // Bristol
+  communityPark({ id: 'ashton-court-estate', name: 'Ashton Court Estate', lat: 51.4483, lng: -2.6349, town: 'Bristol', category: 'walk', description: 'A large estate with deer, mountain bike trails and open parkland.' }),
+  communityPark({ id: 'the-downs-bristol', name: 'The Downs', lat: 51.4735, lng: -2.6266, town: 'Bristol', description: 'A large area of open parkland overlooking the Avon Gorge.' }),
+
+  // Newcastle
+  communityPark({ id: 'leazes-park', name: 'Leazes Park', lat: 54.9761, lng: -1.6193, town: 'Newcastle upon Tyne', water: 'nearby-open', description: "Newcastle's oldest park, with a lake next to St James' Park stadium." }),
+  communityPark({ id: 'jesmond-dene', name: 'Jesmond Dene', lat: 54.9925, lng: -1.5883, town: 'Newcastle upon Tyne', category: 'nature-reserve', water: 'nearby-open', description: 'A wooded valley park along the Ouseburn with waterfalls and a pets corner.' }),
+
+  // Glasgow
+  communityPark({ id: 'kelvingrove-park', name: 'Kelvingrove Park', lat: 55.8695, lng: -4.2836, town: 'Glasgow', water: 'nearby-open', description: 'A park along the River Kelvin next to Kelvingrove Art Gallery.' }),
+  communityPark({ id: 'pollok-country-park', name: 'Pollok Country Park', lat: 55.8236, lng: -4.3153, town: 'Glasgow', category: 'nature-reserve', description: "One of Glasgow's largest parks, home to Highland cattle and the Burrell Collection." }),
+  communityPark({ id: 'queens-park-glasgow', name: "Queen's Park", lat: 55.8302, lng: -4.2661, town: 'Glasgow', water: 'nearby-open', description: 'A hilltop park on the south side of Glasgow with views over the city.' }),
+
+  // Edinburgh
+  communityPark({ id: 'holyrood-park', name: 'Holyrood Park', lat: 55.9445, lng: -3.162, town: 'Edinburgh', category: 'nature-reserve', water: 'nearby-open', description: 'A dramatic royal park with lochs and Arthur\'s Seat at its centre.' }),
+  communityPark({ id: 'princes-street-gardens', name: 'Princes Street Gardens', lat: 55.9508, lng: -3.1997, town: 'Edinburgh', description: 'Gardens in the heart of the city beneath Edinburgh Castle.' }),
+  communityPark({ id: 'the-meadows-edinburgh', name: 'The Meadows', lat: 55.941, lng: -3.191, town: 'Edinburgh', description: 'A large open park popular for sport and picnics near the city centre.' }),
+
+  // Cardiff
+  communityPark({ id: 'bute-park', name: 'Bute Park', lat: 51.4842, lng: -3.181, town: 'Cardiff', water: 'nearby-open', description: 'Parkland beside Cardiff Castle, running along the River Taff.' }),
+  communityPark({ id: 'roath-park', name: 'Roath Park', lat: 51.5039, lng: -3.1707, town: 'Cardiff', water: 'nearby-open', description: 'A Victorian park with a large boating lake and lighthouse memorial.' }),
+
+  // Belfast
+  communityPark({ id: 'botanic-gardens-belfast', name: 'Botanic Gardens', lat: 54.5836, lng: -5.933, town: 'Belfast', description: 'Victorian gardens next to Queen\'s University, with the Palm House glasshouse.' }),
+  communityPark({ id: 'ormeau-park', name: 'Ormeau Park', lat: 54.5807, lng: -5.9207, town: 'Belfast', description: "One of Belfast's largest parks, along the River Lagan." }),
+
+  // Elsewhere in England, Scotland and Wales
+  communityPark({ id: 'wollaton-park', name: 'Wollaton Park', lat: 52.9506, lng: -1.181, town: 'Nottingham', water: 'nearby-open', description: 'A deer park surrounding Wollaton Hall, with a lake and nature trail.' }),
+  communityPark({ id: 'abbey-park-leicester', name: 'Abbey Park', lat: 52.6436, lng: -1.1367, town: 'Leicester', water: 'nearby-open', description: 'A riverside park with formal gardens beside the River Soar.' }),
+  communityPark({ id: 'royal-victoria-park-bath', name: 'Royal Victoria Park', lat: 51.386, lng: -2.3702, town: 'Bath', description: 'Parkland below the Royal Crescent, with a botanical garden and play area.' }),
+  communityPark({ id: 'university-parks-oxford', name: 'University Parks', lat: 51.7614, lng: -1.2547, town: 'Oxford', water: 'nearby-open', description: 'Open parkland beside the River Cherwell in the centre of Oxford.' }),
+  communityPark({ id: 'jesus-green-cambridge', name: 'Jesus Green', lat: 52.2131, lng: 0.1225, town: 'Cambridge', water: 'nearby-open', description: 'Riverside green space along the River Cam, popular for picnics and punting.' }),
+  communityPark({ id: 'rowntree-park-york', name: 'Rowntree Park', lat: 53.9491, lng: -1.0793, town: 'York', water: 'nearby-open', description: 'A riverside park beside the River Ouse with a playground and reading café.' }),
+  communityPark({ id: 'preston-park-brighton', name: 'Preston Park', lat: 50.8391, lng: -0.1421, town: 'Brighton', description: "Brighton's largest park, with formal rose gardens and open lawns." }),
+  communityPark({ id: 'southampton-common', name: 'Southampton Common', lat: 50.927, lng: -1.4113, town: 'Southampton', category: 'nature-reserve', water: 'nearby-open', description: 'Ancient parkland and nature reserve with ponds and woodland.' }),
+  communityPark({ id: 'southsea-common', name: 'Southsea Common', lat: 50.7823, lng: -1.087, town: 'Portsmouth', description: 'Open seafront parkland looking out over the Solent.' }),
+  communityPark({ id: 'central-park-plymouth', name: 'Central Park', lat: 50.3888, lng: -4.1567, town: 'Plymouth', description: "One of Plymouth's largest parks, with sports facilities and open lawns." }),
+  communityPark({ id: 'war-memorial-park-coventry', name: 'War Memorial Park', lat: 52.3229, lng: -1.5354, town: 'Coventry', description: 'A large park with a memorial garden and wide open spaces.' }),
+  communityPark({ id: 'markeaton-park-derby', name: 'Markeaton Park', lat: 52.931, lng: -1.51, town: 'Derby', water: 'nearby-open', description: 'A park with a lake, craft village and miniature railway.' }),
+  communityPark({ id: 'eaton-park-norwich', name: 'Eaton Park', lat: 52.6108, lng: 1.2585, town: 'Norwich', description: 'A large Art Deco-style park in south Norwich.' }),
+  communityPark({ id: 'duthie-park-aberdeen', name: 'Duthie Park', lat: 57.1305, lng: -2.1023, town: 'Aberdeen', water: 'nearby-open', description: 'A riverside park with a pond and the David Welch Winter Gardens.' }),
+  communityPark({ id: 'camperdown-park-dundee', name: 'Camperdown Country Park', lat: 56.4967, lng: -3.0, town: 'Dundee', category: 'walk', description: "One of Dundee's largest parks, with woodland walks and a wildlife centre." }),
+  communityPark({ id: 'singleton-park-swansea', name: 'Singleton Park', lat: 51.6076, lng: -3.9767, town: 'Swansea', description: 'Parkland with botanical gardens next to Swansea University.' }),
+]
+
+export const PLACES: Place[] = [...MILLBROOK_PLACES, ...UK_PARKS]
 
 export function getPlaceById(id: string): Place | undefined {
   return PLACES.find((p) => p.id === id)

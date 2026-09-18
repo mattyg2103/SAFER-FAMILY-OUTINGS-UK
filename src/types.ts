@@ -173,7 +173,7 @@ export interface Place {
   lat: number
   lng: number
   town: string
-  postcode: string
+  postcode?: string
   free: boolean
   priceNote?: string
   heroImage: string // emoji used as a lightweight illustrative placeholder

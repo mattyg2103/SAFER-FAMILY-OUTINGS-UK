@@ -7,7 +7,7 @@ import { PlaceCard } from '../components/home/PlaceCard'
 import { FilterSheet } from '../components/filters/FilterSheet'
 import type { FilterState } from '../types'
 import { placeMatchesFilters, suggestedFiltersForNeeds } from '../lib/filters'
-import { DEFAULT_CENTER, useUserLocation } from '../lib/geo'
+import { DEFAULT_CENTER, DEFAULT_ZOOM, LOCATED_ZOOM, useUserLocation } from '../lib/geo'
 import { haversineMiles } from '../lib/distance'
 import { useFamily } from '../context/FamilyContext'
 
@@ -19,13 +19,22 @@ export function Explore() {
   const { combinedNeeds } = useFamily()
   const [filters, setFilters] = useState<FilterState>(() => suggestedFiltersForNeeds(combinedNeeds))
   const { location } = useUserLocation()
-  const center = location ?? DEFAULT_CENTER
 
   const filtered = useMemo(() => {
     return PLACES.filter((p) => placeMatchesFilters(p, filters)).filter((p) =>
-      query ? `${p.name} ${p.town} ${p.postcode}`.toLowerCase().includes(query.toLowerCase()) : true,
+      query ? `${p.name} ${p.town} ${p.postcode ?? ''}`.toLowerCase().includes(query.toLowerCase()) : true,
     )
   }, [filters, query])
+
+  // Centre on the user's real location when known; otherwise, if they've
+  // searched for somewhere, jump to the first match; otherwise show the
+  // whole of the UK so it's obvious there's nationwide coverage.
+  const center: [number, number] = location
+    ? location
+    : query && filtered.length > 0
+      ? [filtered[0].lat, filtered[0].lng]
+      : DEFAULT_CENTER
+  const zoom = location ? LOCATED_ZOOM : query && filtered.length > 0 ? 12 : DEFAULT_ZOOM
 
   const withDistance = filtered
     .map((p) => ({ place: p, distance: haversineMiles(center, [p.lat, p.lng]) }))
@@ -68,7 +77,7 @@ export function Explore() {
 
       {view === 'map' ? (
         <div className="h-[60vh] min-h-[360px]">
-          <MapView places={filtered} center={center} userLocation={location ?? undefined} />
+          <MapView places={filtered} center={center} zoom={zoom} userLocation={location ?? undefined} />
         </div>
       ) : (
         <div className="flex-1 p-4">
