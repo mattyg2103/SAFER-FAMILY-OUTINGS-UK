@@ -3,6 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom'
 import { TopBar } from '../components/layout/TopBar'
 import { PLACES, getPlaceById } from '../data/locations'
 import { useFamily } from '../context/FamilyContext'
+import { api } from '../lib/api'
 
 type ContributionType = 'review' | 'update' | 'report' | 'new-location'
 
@@ -15,7 +16,7 @@ const TYPES: { key: ContributionType; label: string; icon: string }[] = [
 
 export function Contribute() {
   const [params] = useSearchParams()
-  const { addReview, addReport } = useFamily()
+  const { addReport } = useFamily()
   const [type, setType] = useState<ContributionType>((params.get('type') as ContributionType) ?? 'update')
   const [placeId, setPlaceId] = useState(params.get('place') ?? PLACES[0].id)
   const [submitted, setSubmitted] = useState(false)
@@ -35,7 +36,9 @@ export function Contribute() {
 
   const submit = () => {
     if (type === 'review') {
-      addReview(placeId, { authorLabel: 'A family who visited', rating, text, visitedWith: visitedWith || undefined })
+      api
+        .addReview(placeId, { authorLabel: 'A family who visited', rating, text, visitedWith: visitedWith || undefined })
+        .catch(() => {})
     } else if (type === 'update') {
       const parts = []
       if (enclosed) parts.push(`Enclosed: ${enclosed}`)

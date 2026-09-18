@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, Link, Navigate } from 'react-router-dom'
 import { getPlaceById } from '../data/locations'
 import { TopBar } from '../components/layout/TopBar'
@@ -11,22 +11,33 @@ import { RouteJourney } from '../components/map/RouteJourney'
 import { MapView } from '../components/map/MapView'
 import { useFamily } from '../context/FamilyContext'
 import { EVENTS } from '../data/events'
+import { api } from '../lib/api'
+import type { Review } from '../types'
 
 type Tab = 'overview' | 'match' | 'route' | 'reviews'
 
 export function LocationDetail() {
   const { id } = useParams()
   const place = id ? getPlaceById(id) : undefined
-  const { isSaved, toggleSaved, contributedReviews } = useFamily()
+  const { isSaved, toggleSaved } = useFamily()
   const [tab, setTab] = useState<Tab>('overview')
   const [selectedWaypoint, setSelectedWaypoint] = useState<string | undefined>(undefined)
   const [routeIndex, setRouteIndex] = useState(0)
+  const [communityReviews, setCommunityReviews] = useState<Review[]>([])
+
+  useEffect(() => {
+    if (!place) return
+    api
+      .getReviews(place.id)
+      .then(setCommunityReviews)
+      .catch(() => {})
+  }, [place])
 
   if (!place) return <Navigate to="/explore" replace />
 
   const route = place.routes[routeIndex]
   const events = EVENTS.filter((e) => e.placeId === place.id)
-  const allReviews = [...place.reviews, ...contributedReviews.filter((r) => r.placeId === place.id)]
+  const allReviews = [...communityReviews, ...place.reviews]
 
   return (
     <div className="flex flex-1 flex-col">

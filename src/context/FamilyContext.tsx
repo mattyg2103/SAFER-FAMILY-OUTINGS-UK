@@ -1,68 +1,73 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import type { ChildProfile, FamilyAccount, Review } from '../types'
-import { loadJSON, newId, saveJSON } from '../lib/storage'
+import type { ChildProfile, FamilyAccount } from '../types'
+import { loadJSON, saveJSON } from '../lib/storage'
+import { api } from '../lib/api'
 
-export interface ContributedReview extends Review {
-  placeId: string
+const DEVICE_ID_KEY = 'sfo:deviceId'
+const ONBOARDED_KEY = 'sfo:onboarded'
+
+function getDeviceId(): string {
+  let id = window.localStorage.getItem(DEVICE_ID_KEY)
+  if (!id) {
+    id = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `dev-${Math.random().toString(36).slice(2)}`
+    window.localStorage.setItem(DEVICE_ID_KEY, id)
+  }
+  return id
 }
 
-export interface CommunityReport {
-  id: string
-  placeId: string
-  kind: 'update' | 'closure' | 'new-location' | 'new-route'
-  summary: string
-  createdAt: string
-}
+type ServerChild = ChildProfile & { active: boolean }
 
-interface FamilyState {
+interface FamilyContextValue {
   account: FamilyAccount | null
   children: ChildProfile[]
   activeChildIds: string[]
   savedPlaceIds: string[]
-  contributedReviews: ContributedReview[]
-  reports: CommunityReport[]
   onboarded: boolean
-}
-
-interface FamilyContextValue extends FamilyState {
+  ready: boolean
   signIn: (email: string) => void
   signOut: () => void
   completeOnboarding: () => void
-  addChild: (child: Omit<ChildProfile, 'id' | 'createdAt'>) => string
+  addChild: (child: Omit<ChildProfile, 'id' | 'createdAt'>) => void
   updateChild: (id: string, patch: Partial<Omit<ChildProfile, 'id' | 'createdAt'>>) => void
   removeChild: (id: string) => void
   toggleActiveChild: (id: string) => void
   toggleSaved: (placeId: string) => void
   isSaved: (placeId: string) => boolean
-  addReview: (placeId: string, review: Omit<Review, 'id' | 'createdAt' | 'helpfulCount'>) => void
-  addReport: (report: Omit<CommunityReport, 'id' | 'createdAt'>) => void
+  addReport: (report: { placeId: string; kind: string; summary: string }) => void
   combinedNeeds: Set<string>
   maxRouteDistanceMiles: number | null
-}
-
-const STORAGE_KEY = 'family-state'
-
-const defaultState: FamilyState = {
-  account: null,
-  children: [],
-  activeChildIds: [],
-  savedPlaceIds: [],
-  contributedReviews: [],
-  reports: [],
-  onboarded: false,
 }
 
 const FamilyContext = createContext<FamilyContextValue | null>(null)
 
 export function FamilyProvider({ children: reactChildren }: { children: ReactNode }) {
-  const [state, setState] = useState<FamilyState>(() => loadJSON(STORAGE_KEY, defaultState))
+  const deviceId = useMemo(getDeviceId, [])
+  const [account, setAccount] = useState<FamilyAccount | null>(null)
+  const [serverChildren, setServerChildren] = useState<ServerChild[]>([])
+  const [savedPlaceIds, setSavedPlaceIds] = useState<string[]>([])
+  const [onboarded, setOnboarded] = useState(() => loadJSON(ONBOARDED_KEY, false))
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    saveJSON(STORAGE_KEY, state)
-  }, [state])
+    api
+      .getOrCreateFamily(deviceId)
+      .then((snapshot) => {
+        setAccount(snapshot.account)
+        setServerChildren(snapshot.children)
+        setSavedPlaceIds(snapshot.savedPlaceIds)
+      })
+      .catch(() => {
+        // Offline or API unreachable — the app still works with an empty family.
+      })
+      .finally(() => setReady(true))
+  }, [deviceId])
+
+  useEffect(() => {
+    saveJSON(ONBOARDED_KEY, onboarded)
+  }, [onboarded])
 
   const value = useMemo<FamilyContextValue>(() => {
-    const activeChildren = state.children.filter((c) => state.activeChildIds.includes(c.id))
+    const activeChildren = serverChildren.filter((c) => c.active)
     const combinedNeeds = new Set<string>()
     for (const child of activeChildren) {
       for (const need of child.needs) combinedNeeds.add(need)
@@ -73,74 +78,51 @@ export function FamilyProvider({ children: reactChildren }: { children: ReactNod
     const maxRouteDistanceMiles = distances.length ? Math.min(...distances) : null
 
     return {
-      ...state,
+      account,
+      children: serverChildren,
+      activeChildIds: activeChildren.map((c) => c.id),
+      savedPlaceIds,
+      onboarded,
+      ready,
       combinedNeeds,
       maxRouteDistanceMiles,
       signIn: (email: string) => {
-        setState((s) => ({
-          ...s,
-          account: s.account?.email === email ? s.account : { id: newId('fam'), email, createdAt: new Date().toISOString() },
-        }))
+        api.getOrCreateFamily(deviceId, email).then((snapshot) => setAccount(snapshot.account))
       },
-      signOut: () => setState((s) => ({ ...s, account: null })),
-      completeOnboarding: () => setState((s) => ({ ...s, onboarded: true })),
+      signOut: () => {
+        setAccount(null)
+        api.signOut(deviceId).catch(() => {})
+      },
+      completeOnboarding: () => setOnboarded(true),
       addChild: (child) => {
-        const id = newId('child')
-        setState((s) => ({
-          ...s,
-          children: [...s.children, { ...child, id, createdAt: new Date().toISOString() }],
-          activeChildIds: [...s.activeChildIds, id],
-        }))
-        return id
+        api.addChild(deviceId, child).then((created) => setServerChildren((cs) => [...cs, created]))
       },
       updateChild: (id, patch) => {
-        setState((s) => ({
-          ...s,
-          children: s.children.map((c) => (c.id === id ? { ...c, ...patch } : c)),
-        }))
+        setServerChildren((cs) => cs.map((c) => (c.id === id ? { ...c, ...patch } : c)))
+        api.updateChild(id, patch).catch(() => {})
       },
       removeChild: (id) => {
-        setState((s) => ({
-          ...s,
-          children: s.children.filter((c) => c.id !== id),
-          activeChildIds: s.activeChildIds.filter((cid) => cid !== id),
-        }))
+        setServerChildren((cs) => cs.filter((c) => c.id !== id))
+        api.removeChild(id).catch(() => {})
       },
       toggleActiveChild: (id) => {
-        setState((s) => ({
-          ...s,
-          activeChildIds: s.activeChildIds.includes(id)
-            ? s.activeChildIds.filter((cid) => cid !== id)
-            : [...s.activeChildIds, id],
-        }))
+        setServerChildren((cs) => cs.map((c) => (c.id === id ? { ...c, active: !c.active } : c)))
+        const child = serverChildren.find((c) => c.id === id)
+        if (child) api.updateChild(id, { active: !child.active }).catch(() => {})
       },
       toggleSaved: (placeId) => {
-        setState((s) => ({
-          ...s,
-          savedPlaceIds: s.savedPlaceIds.includes(placeId)
-            ? s.savedPlaceIds.filter((id) => id !== placeId)
-            : [...s.savedPlaceIds, placeId],
-        }))
+        const isCurrentlySaved = savedPlaceIds.includes(placeId)
+        setSavedPlaceIds((ids) => (isCurrentlySaved ? ids.filter((id) => id !== placeId) : [...ids, placeId]))
+        const call = isCurrentlySaved ? api.unsavePlace(deviceId, placeId) : api.saveplace(deviceId, placeId)
+        call.catch(() => {})
       },
-      isSaved: (placeId) => state.savedPlaceIds.includes(placeId),
-      addReview: (placeId, review) => {
-        setState((s) => ({
-          ...s,
-          contributedReviews: [
-            ...s.contributedReviews,
-            { ...review, id: newId('review'), placeId, createdAt: new Date().toISOString(), helpfulCount: 0 },
-          ],
-        }))
-      },
+      isSaved: (placeId) => savedPlaceIds.includes(placeId),
       addReport: (report) => {
-        setState((s) => ({
-          ...s,
-          reports: [...s.reports, { ...report, id: newId('report'), createdAt: new Date().toISOString() }],
-        }))
+        api.addReport(report).catch(() => {})
       },
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state])
+  }, [account, serverChildren, savedPlaceIds, onboarded, ready, deviceId])
 
   return <FamilyContext.Provider value={value}>{reactChildren}</FamilyContext.Provider>
 }
