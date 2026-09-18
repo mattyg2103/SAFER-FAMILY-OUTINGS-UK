@@ -1,0 +1,79 @@
+@import 'tailwindcss';
+@import 'leaflet/dist/leaflet.css';
+
+@theme {
+  --color-brand-50: #eefaf4;
+  --color-brand-100: #d6f2e3;
+  --color-brand-200: #ade5c8;
+  --color-brand-300: #7ad3a9;
+  --color-brand-400: #4bbd8b;
+  --color-brand-500: #2a9d6f;
+  --color-brand-600: #1f7f5a;
+  --color-brand-700: #1c654a;
+  --color-brand-800: #1a503d;
+  --color-brand-900: #164233;
+  --color-sun-50: #fff8ec;
+  --color-sun-100: #ffedc7;
+  --color-sun-200: #ffd985;
+  --color-sun-300: #ffc04d;
+  --color-sun-400: #f8a51f;
+  --color-sun-500: #e88a0a;
+  --color-sky-50: #eef7ff;
+  --color-sky-100: #d9ecff;
+  --color-sky-500: #3e8fd0;
+  --color-coral-50: #fff1f0;
+  --color-coral-100: #ffdedb;
+  --color-coral-500: #e0664f;
+
+  --font-sans: 'Nunito', system-ui, 'Segoe UI', Roboto, sans-serif;
+}
+
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: #f6faf8;
+  color: #1c2b26;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  max-width: 560px;
+  margin: 0 auto;
+  background: #f6faf8;
+  position: relative;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* Leaflet container needs an explicit height */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-sans);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
