@@ -1,7 +1,7 @@
 # Episode 1 — What Is Autism?
 
 **Series:** Understanding Autism · **Slogan:** "Understanding Starts With Listening."
-**Target length:** about 2:50 · **Voiceover:** about 390 words · **Format:** 16:9 (YouTube). Reframe to 9:16 for TikTok/Reels.
+**Target length:** about 2:55 · **Look:** bright, happy children's cartoon · **Voiceover:** about 390 words · **Format:** 16:9 (YouTube). Reframe to 9:16 for TikTok/Reels.
 
 ---
 
@@ -26,13 +26,13 @@ listening, in whatever way that person communicates.**
 > Lines marked ✏️ are personal. Change them so they're true for your family.
 
 **Scene 1 — Hook (0:00–0:10)**
-✏️ My child doesn't speak with words. `[pause]` But every single day, they tell
-me **exactly** what they need. `[pause]` I just had to learn how to listen.
+If you're looking to get a clearer understanding of autism, you've come to
+the **right place**. `[pause]` Welcome to Episode 1!
 
 **Scene 2 — Introduce topic (0:10–0:25)**
-Hi, I'm Matty, and this is *Understanding Autism*. In this first episode, we're
-starting with the big question: what actually **is** autism? And why does
-understanding it matter so much?
+✏️ I'm Matty, and this is *Understanding Autism*. Today we're starting with the
+big question: what actually **is** autism? And why does understanding it
+matter so much?
 
 **Scene 3 — Explain simply (0:25–0:45)**
 Autism is a lifelong difference in how a person's brain develops and works. It
@@ -89,7 +89,7 @@ in the comments: what's **one thing** you wish more people understood?
 
 | # | Time | Beat | On screen | Audio |
 | --- | --- | --- | --- | --- |
-| 1 | 0:00–0:10 | Hook | Close-up of a parent's hand and a child's hand together on a kitchen table. The child taps a picture card. The parent smiles and nods. Slow push-in. | Soft piano begins. VO: hook line. |
+| 1 | 0:00–0:10 | Hook | Bright cartoon world: blue sky, smiling sun, fluffy clouds, green hills. A group of happy, diverse cartoon children bounce in and wave. A big "Welcome!" appears. | Upbeat, playful music begins. VO: welcome line. |
 | 2 | 0:10–0:25 | Introduce | Matty to camera (real footage) in a warm living room, **or** an animated logo reveal followed by the title card "What Is Autism?". | Music settles. VO intro. |
 | 3 | 0:25–0:45 | Explain | Animated illustration: a stylised head outline. Gentle coloured pathways (blue, teal, purple) light up for "communication", "connection" and "senses". Small icons appear: speech bubble, two figures, ear/eye/hand. | VO definition. |
 | 4 | 0:45–1:05 | Example | Supermarket aisle from a child's eye level. At first normal, then the lights, tills and voices subtly *intensify*: the image sharpens, the colours grow slightly brighter and sound icons appear. **No flashing.** Then the scene calms as a parent offers ear defenders. | Ambient supermarket sound rises slightly under the VO, then softens. |
@@ -107,7 +107,7 @@ in the comments: what's **one thing** you wish more people understood?
 > Shared style suffix. Add it to the end of **every** image prompt:
 > `soft natural lighting, warm and calm colour grade with subtle blue, teal and purple accents, shallow depth of field, photorealistic, gentle and hopeful mood, uncluttered composition, 16:9`
 
-1. **Hook:** Close-up of an adult's hand resting beside a young child's hand on a wooden kitchen table. The child's finger is touching a laminated picture card showing a cup. Morning light through a window.
+1. **Hook:** Bright, colourful children's cartoon illustration. A group of five happy, diverse cartoon children stand on rolling green hills under a blue sky with a smiling sun and fluffy clouds, waving at the viewer. Big friendly "Welcome!" lettering.
 2. **Introduce:** A cosy, tidy British living room with a sofa, bookshelf and plant. An empty space in front for a presenter. Late-afternoon light.
 3. **Explain:** Minimal flat vector illustration of a side-profile head outline on an off-white background. Three glowing flowing pathways inside, in blue, teal and purple, each ending at a small icon: a speech bubble, two people, and an ear.
 4. **Example:** A UK supermarket aisle seen from a 7-year-old's eye height. Bright overhead strip lights, shelves of colourful products, a checkout visible at the end. Slightly heightened sharpness and contrast.
@@ -122,7 +122,7 @@ in the comments: what's **one thing** you wish more people understood?
 
 > Keep clips 5–10 s. Ask for **"slow, smooth camera movement, no flashing lights, no rapid cuts"** in every prompt. Generate 2–3 takes of each scene and choose the best.
 
-1. **Hook:** Slow push-in on an adult's hand and a child's hand on a kitchen table. The child taps a picture card of a cup. The adult's hand gently squeezes the child's hand. Warm morning light. Slow, smooth camera movement, no flashing lights.
+1. **Hook:** 2D children's cartoon animation. Five happy, diverse cartoon children bounce gently onto sunny green hills and wave at the camera. Clouds drift and the smiling sun turns slowly. Bright, cheerful colours. Smooth, gentle motion, no flashing lights.
 2. **Introduce:** Slow dolly across a cosy living room towards the sofa. Dust motes in the late-afternoon light. Calm, welcoming. *(Or use real footage of Matty.)*
 3. **Explain:** Flat vector animation: a head outline draws itself on screen. Three glowing pathways in blue, teal and purple flow gently from the centre towards a speech-bubble icon, a two-people icon and an ear icon. Smooth, slow motion.
 4. **Example:** POV of a child walking slowly down a supermarket aisle. The overhead lights gradually become a little brighter and sharper, and the shelves feel slightly closer. Then an adult's hands gently place soft ear defenders over the camera's view, and the scene softens and calms. No flashing, no rapid motion.
@@ -175,17 +175,17 @@ They can be uncomfortable for sensory-sensitive viewers.
 
 ## 9. Music suggestions
 
-- **Style:** soft solo piano opening, building gently with light strings or
-  warm acoustic guitar. Around 70–85 BPM. Major key with a hopeful lift at scene 8.
+- **Style:** happy and bouncy: ukulele-style plucks, glockenspiel melody and soft
+  bass. Around 100–110 BPM in a major key. Cheerful, but never loud or frantic.
 - **Search terms (YouTube Audio Library / Epidemic Sound / Artlist):**
-  "hopeful piano", "gentle inspiring acoustic", "warm documentary".
+  "happy ukulele kids", "cheerful glockenspiel", "uplifting children's".
 - **Mix:** voiceover at about −6 dB and music ducked to about −20 dB under speech.
   No sudden drops or crashes.
 
 ## 10. Thumbnail design
 
-- **Image:** a close-up of a parent's hand and a child's hand touching a picture
-  card (from scene 1), on the right two-thirds of the frame.
+- **Image:** the waving cartoon children on sunny hills (from scene 1), on the right
+  two-thirds of the frame.
 - **Text (left):** **"What IS Autism?"**, 2–3 words only, deep navy on an
   off-white panel, with the word "IS" in teal.
 - **Branding:** a small logo in the corner and a thin blue-teal-purple gradient bar
@@ -206,15 +206,15 @@ I'm Matty, a dad to a non-speaking autistic child. This series is about building
 understanding, one short video at a time.
 
 In this video:
-0:00 My story
-0:10 Welcome to Understanding Autism
-0:25 What is autism?
-0:45 A trip to the supermarket
-1:05 What "spectrum" really means
-1:25 A common misunderstanding
-1:40 The reality: strengths and challenges
-2:05 Neurodiversity and acceptance
-2:25 Recap
+0:00 Welcome
+0:08 Introduction
+0:20 What is autism?
+0:42 A trip to the supermarket
+1:03 What "spectrum" really means
+1:27 A common misunderstanding
+1:38 The reality: strengths and challenges
+2:10 Neurodiversity and acceptance
+2:28 Recap
 
 Next episode: Common Myths About Autism
 
@@ -234,7 +234,7 @@ your child may be autistic, speak to your GP, health visitor or your school's SE
 ## 12. TikTok / Reels description
 
 ```
-My child doesn't speak with words, but tells me what they need every day 💙
+Want a clearer understanding of autism? You've come to the right place 💙
 Here's what autism actually is, explained simply. Ep 1 of Understanding Autism.
 What do you wish more people understood? 👇
 

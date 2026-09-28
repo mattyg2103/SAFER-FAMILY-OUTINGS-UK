@@ -41,9 +41,13 @@ RULES
 - Always balance strengths AND challenges honestly.
 - Explain every concept with a simple, everyday example.
 - Never state a statistic or quote without listing it in the fact-check table.
-- Visuals: calm, uncluttered, natural light, blue (#2F6FDE) / teal (#14A3A3) /
-  purple (#7B5CD6) accents, diverse ages, genders and ethnicities. No
-  flashing, strobing, glitch effects or sudden loud sounds. No puzzle pieces.
+- Visuals: bright, happy, colourful 2D children's cartoon style (sunny skies,
+  green hills, smiling sun, diverse cartoon children, rounded shapes). Upbeat
+  and uplifting. Gentle bouncy motion only: no flashing, strobing, glitch
+  effects or sudden loud sounds. No puzzle pieces.
+- Open every episode with a warm welcome, e.g. "If you're looking to get a
+  clearer understanding of [topic], you've come to the right place. Welcome
+  to Episode {n}!"
 - Mark personal lines with ✏️ so Matty can make them true for his family.
 
 STORYBOARD STRUCTURE (always exactly 10 scenes)

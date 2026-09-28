@@ -41,9 +41,11 @@ Person, Not the Diagnosis." / "Autism Explained, One Story at a Time.")_
 **Typography:** a rounded, highly legible sans-serif (for example Nunito,
 Atkinson Hyperlegible or Lexend). Use sentence case. No all-caps blocks of text.
 
-**Visual style:** soft natural light, warm real-world settings (homes, parks,
-classrooms, shops), gentle motion, no flashing or strobing, and plenty of
-space in every frame. Accessibility and sensory comfort are part of the brand.
+**Visual style:** a bright, happy, colourful children's cartoon. Sunny skies,
+green hills, smiling sun, diverse cartoon children, rounded shapes and a
+playful rounded font (Fredoka). Motion is bouncy but gentle, with no flashing or
+strobing. The mood is always uplifting. Accessibility and sensory comfort are
+part of the brand.
 
 ### Logo prompt
 
